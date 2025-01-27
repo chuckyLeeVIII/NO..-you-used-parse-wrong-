@@ -51,3 +51,4 @@ matching_logins = golden_sorter(logins, websites, gateways)
 print("Matching logins found:")
 for login, source, result in matching_logins:
     print(f"Login: {login}, Source: {source}, Result: {result}")
+#example way you could possibly mabey use  a log in to parse AND xxs  enter into multi sites with just one login cred.

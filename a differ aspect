@@ -1,0 +1,53 @@
+import requests
+from bs4 import BeautifulSoup
+
+def search_website(url, login):
+    response = requests.post(url, data=login)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    result = soup.find('div', {'class': 'result'})
+    if result:
+        return result.text
+    return None
+
+def search_gateway(gateway_url, login):
+    response = requests.post(gateway_url, data=login)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+def golden_sorter(logins, websites, gateways):
+    matching_logins = []
+    for login in logins:
+        for website in websites:
+            result = search_website(website, login)
+            if result:
+                matching_logins.append((login, website, result))
+        for gateway in gateways:
+            result = search_gateway(gateway, login)
+            if result:
+                matching_logins.append((login, gateway, result))
+    return matching_logins
+
+# Example usage
+logins = [
+    {'username': 'user1', 'password': 'password1'},
+    {'username': 'user2', 'password': 'password2'},
+    # Add more logins as needed
+]
+
+websites = [
+    'https://website1.com/login',
+    'https://website2.com/login',
+    # Add more websites as needed
+]
+
+gateways = [
+    'https://gateway1.com/api/search',
+    'https://gateway2.com/api/search',
+    # Add more gateways as needed
+]
+
+matching_logins = golden_sorter(logins, websites, gateways)
+print("Matching logins found:")
+for login, source, result in matching_logins:
+    print(f"Login: {login}, Source: {source}, Result: {result}")
